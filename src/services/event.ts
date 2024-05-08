@@ -1,11 +1,11 @@
 import Event from "../models/event";
+import Place from "../models/place";
 import User from "../models/user";
 import { Types } from "mongoose";
 
 async function Upsert(eventData: any) {
   try {
     const { _id, ...restEventData } = eventData;
-
     if (_id) {
       const updatedEvent = await Event.findByIdAndUpdate(_id, restEventData, {
         new: true,
@@ -33,16 +33,17 @@ async function getAll() {
   }
 }
 
-async function registerToEvent(userId: string, eventId: string) {
+async function registerToEvent(userId: string, eventId: string, placeId: string) {
   try {
     const event = await Event.findById(eventId);
     const user = await User.findById(userId);
+    const place = await Place.findById(placeId)
 
-    if (!event || !user) {
+    if (!event || !user || !place) {
       throw new Error("Could not find the corresponding event or user");
     }
 
-    if (event.attendees.length >= event.occupancy) {
+    if (event.attendees.length >= place?.occupancy) {
       throw new Error("the event is full");
     }
 
@@ -61,8 +62,19 @@ async function registerToEvent(userId: string, eventId: string) {
   }
 }
 
+
+async function getById(eventId: string) {
+  try {
+    const event = await Event.findById(eventId);
+    return event;
+  } catch (error) {
+    throw new Error("Error retrieving event: " + error);
+  }
+}
+
 export default {
   Upsert,
   getAll,
-  registerToEvent
+  registerToEvent,
+  getById
 };

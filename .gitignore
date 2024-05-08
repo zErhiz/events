@@ -23,4 +23,5 @@ yarn.lock
 
 # Log
 log
+logs
 *.log

@@ -43,6 +43,8 @@ const corsOptions = {
    { path: "/user", router: routes.userRouter },
    { path: "/place", router: routes.placeRouter},
    { path: "/event", router: routes.eventRouter},
+   { path: "/comment", router: routes.commentRouter},
+    { path: "/qualification", router: routes.qualificationRouter}
  
 ];
 

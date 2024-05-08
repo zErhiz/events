@@ -34,10 +34,7 @@ let schema = new Schema({
     ref: "User",
     required: true,
   },
-  occupancy: {
-    type: Number,
-    required: true,
-  },
+ 
 });
 
 let Event = model("Event", schema);

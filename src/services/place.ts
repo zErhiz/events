@@ -2,23 +2,29 @@ import Place from '../models/place';
 
 async function upsertPlace(placeData: any) {
   try {
-    const { name, ...rest } = placeData;
+    const { _id , ...rest } = placeData;
 
-    let place = await Place.findOne({ name });
+    let place;
 
-    if (place) {
-      place.set({ ...rest });
+    if (_id) {
+      const updatedPlace = await Place.findByIdAndUpdate(_id, rest, { new: true });
+      if (!updatedPlace) {
+        throw new Error("The place doesn't exist");
+      }
+      return updatedPlace;
     } else {
-      place = new Place({ name, ...rest });
+      place = new Place(rest);
+      await place.save();
     }
-
-    await place.save();
 
     return place;
   } catch (error) {
     throw new Error('Error upserting place: ' + error);
   }
 }
+
+
+
 
 async function getAll() {
     try {
@@ -29,8 +35,18 @@ async function getAll() {
     }
   }
 
+  async function getById(id: string) {
+    try {
+      const place = await Place.findById(id);
+      return place;
+    }
+    catch (error) {
+      throw new Error('Error retrieving place: ' + error);
+    }
+  }
 
 export default {
   upsertPlace,
-  getAll
+  getAll,
+  getById
 };
